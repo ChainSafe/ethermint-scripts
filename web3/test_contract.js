@@ -1,4 +1,6 @@
 const Web3 = require("web3");
+const txs = require("./send_transactions");
+
 const web3 = new Web3(
   new Web3.providers.HttpProvider("http://localhost:8545/rpc")
 );
@@ -16,7 +18,7 @@ async function getCurrentAccount() {
   return currentAccounts[0];
 }
 function deployContract(account) {
-  testContract
+  return testContract
     .deploy({
       arguments: ["1.0"],
       data:
@@ -26,11 +28,20 @@ function deployContract(account) {
       // Need to add manually
       from: account,
       gas: "470000",
-      gasPrice: "10"
+      gasPrice: 20
     })
     .then(function(newContractInstance) {
       console.log("Contract Address:: ", newContractInstance.options.address);
-    });
+      return newContractInstance.options.address;
+    })
+    .catch(err => console.log(err));
 }
 
-getCurrentAccount().then((acc) => deployContract(acc));
+getCurrentAccount().then(function(account) {
+  deployContract(account)
+    .then(function(contractAddr) {
+      console.log(account, contractAddr);
+      txs.sendTransactionsToAccount(account, contractAddr);
+    })
+    .catch(err => console.log(err));
+});

@@ -13,7 +13,7 @@ module.exports = {
           from: account,
           to: contractAddress,
           value: 5,
-          gas: 200000,
+          gas: 500000,
           gasPrice: 20
         },
         function(e, hash) {
@@ -28,7 +28,7 @@ module.exports = {
           from: account,
           to: contractAddress,
           value: 291,
-          gas: 200000,
+          gas: 500000,
           gasPrice: 20
         },
         function(e, hash) {
@@ -43,7 +43,7 @@ module.exports = {
           from: account,
           to: contractAddress,
           value: 53039,
-          gas: 200000,
+          gas: 500000,
           gasPrice: 20
         },
         function(e, hash) {

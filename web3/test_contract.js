@@ -4,8 +4,8 @@ const txs = require("./send_transactions");
 const web3 = new Web3(
   new Web3.providers.HttpProvider("http://localhost:8545/rpc")
 );
-let data =
-  '[{"constant":true,"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"name":"items","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"version","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"bytes32","name":"key","type":"bytes32"},{"internalType":"bytes32","name":"value","type":"bytes32"}],"name":"setItem","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"_version","type":"string"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"key","type":"bytes32"},{"indexed":false,"internalType":"bytes32","name":"value","type":"bytes32"}],"name":"ItemSet","type":"event"}]';
+let data = "[{\"constant\":true,\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"items\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"version\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"value\",\"type\":\"bytes32\"}],\"name\":\"setItem\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_version\",\"type\":\"string\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"key\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"value\",\"type\":\"bytes32\"}],\"name\":\"ItemSet\",\"type\":\"event\"}]"
+
 const ABI = JSON.parse(data);
 
 const testContract = new web3.eth.Contract(ABI);
@@ -32,16 +32,28 @@ function deployContract(account) {
     })
     .then(function(newContractInstance) {
       console.log("Contract Address:: ", newContractInstance.options.address);
-      return newContractInstance.options.address;
+      return newContractInstance;
     })
     .catch(err => console.log(err));
 }
 
 getCurrentAccount().then(function(account) {
   deployContract(account)
-    .then(function(contractAddr) {
-      console.log(account, contractAddr);
-      txs.sendTransactionsToAccount(account, contractAddr);
+    .then(function(contract) {
+      console.log(account, contract.options.address);
+      interact(contract, account, "test1")
+      interact(contract, account, "test2")
+    //   txs.sendTransactionsToAccount(account, contractAddr);
     })
     .catch(err => console.log(err));
 });
+
+function interact(newContractInstance, account, name) {
+    newContractInstance.methods.setItem(web3.utils.fromAscii(name).padEnd(66, '0'), web3.utils.fromAscii('Lick').padEnd(66, '0'))
+        .send({
+            // Need to add manually
+            from: account,
+            gas: '470000',
+            gasPrice: '10'
+        });
+}

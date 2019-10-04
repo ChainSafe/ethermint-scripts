@@ -17,7 +17,7 @@ async function getCurrentAccount() {
   console.log("Unlocked account address: " + currentAccounts[0]);
   return currentAccounts[0];
 }
-function deployContract(account) {
+async function deployContract(account) {
   return testContract
     .deploy({
       arguments: ["1.0"],
@@ -35,22 +35,27 @@ function deployContract(account) {
     .catch(err => console.log(err));
 }
 
-getCurrentAccount().then(function(account) {
-  deployContract(account)
-    .then(function(contract) {
-      interact(contract, account, true);
-      interact(contract, account, false);
-    })
-    .catch(err => console.log(err));
-});
-
-function interact(newContractInstance, account, name) {
-  newContractInstance.methods
+async function interact(newContractInstance, account, name) {
+  return newContractInstance.methods
     .emitTest(name)
     .send({
       from: account,
       gas: "470000",
       gasPrice: "10"
     })
-    .then(res => console.log("Tx", res.transactionIndex, ":", res.logsBloom));
+    .then(function(res) {
+      console.log("Tx", res.transactionIndex, ":", res.logsBloom);
+      return res.blockNumber;
+    });
 }
+
+async function run() {
+  const account = await getCurrentAccount();
+  const contract = await deployContract(account);
+  interact(contract, account, true);
+  const blockNum = await interact(contract, account, false);
+  console.log("block number: " + blockNum, typeof blockNum);
+  //   web3.eth.getBlock(parseInt(blockNum)).then(console.log);
+}
+
+run().then(() => console.log("done"));

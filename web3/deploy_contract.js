@@ -5,8 +5,8 @@ const web3 = new Web3(
   new Web3.providers.HttpProvider("http://localhost:8545/rpc")
 );
 
-const contract = fs.readFileSync("./logsContract/build/Logger.bin").toString();
-const abiData = fs.readFileSync("./logsContract/build/Logger.abi").toString();
+const contract = fs.readFileSync("../contracts/logsContract/build/Logger.bin").toString();
+const abiData = fs.readFileSync("../contracts/logsContract/build/Logger.abi").toString();
 
 const ABI = JSON.parse(abiData);
 
@@ -25,7 +25,7 @@ async function deployContract(account) {
     })
     .send({
       from: account,
-      gas: "470000",
+      gas: 470000,
       gasPrice: 20
     })
     .then(function(newContractInstance) {
@@ -40,8 +40,8 @@ async function interact(newContractInstance, account, name) {
     .emitTest(name)
     .send({
       from: account,
-      gas: "470000",
-      gasPrice: "10"
+      gas: 470000,
+      gasPrice: 10
     })
     .then(function(res) {
       console.log("Tx", res.transactionIndex, ":", res.logsBloom);
@@ -54,8 +54,8 @@ async function run() {
   const contract = await deployContract(account);
   interact(contract, account, true);
   const blockNum = await interact(contract, account, false);
-  console.log("block number: " + blockNum, typeof blockNum);
-  //   web3.eth.getBlock(parseInt(blockNum)).then(console.log);
+  console.log("block number: " + blockNum);
+  // web3.eth.getBlock(parseInt(blockNum)).then(console.log);
 }
 
 run().then(() => console.log("done"));

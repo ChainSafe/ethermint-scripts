@@ -52,7 +52,8 @@ async function interact(newContractInstance, account, name) {
 async function run() {
   const account = await getCurrentAccount();
   const contract = await deployContract(account);
-  interact(contract, account, true);
+  // TODO: Remove await from first interact when mempool nonce resolved
+  await interact(contract, account, true);
   const blockNum = await interact(contract, account, false);
   console.log("block number: " + blockNum);
   // web3.eth.getBlock(parseInt(blockNum)).then(console.log);

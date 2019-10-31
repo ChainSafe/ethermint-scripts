@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import fs from "fs";
 
 const provider = new ethers.providers.JsonRpcProvider(
-  "http://localhost:8545/rpc"
+  "http://localhost:8545"
 );
 
 const contract = fs.readFileSync("../contracts/logsContract/build/Logger.bin").toString();

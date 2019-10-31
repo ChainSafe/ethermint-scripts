@@ -2,7 +2,7 @@ const Web3 = require("web3");
 const fs = require("fs");
 
 const web3 = new Web3(
-  new Web3.providers.HttpProvider("http://localhost:8545/rpc")
+  new Web3.providers.HttpProvider("http://localhost:8545")
 );
 
 const contract = fs.readFileSync("../contracts/logsContract/build/Logger.bin").toString();

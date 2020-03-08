@@ -1,1 +1,0 @@
-[{"constant":false,"inputs":[{"internalType":"bool","name":"_name","type":"bool"}],"name":"emitTest","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[],"name":"event1","type":"event"},{"anonymous":false,"inputs":[],"name":"event2","type":"event"}]

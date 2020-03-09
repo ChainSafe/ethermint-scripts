@@ -49,14 +49,34 @@ async function interact(newContractInstance, account, name) {
     });
 }
 
+// This will get the block by block number and display it.  
+async function getBlockByNumber(blockNum) {
+    console.log("\n", "block number: " + blockNum);
+    return web3.eth.getBlock(parseInt(blockNum))
+    .then(console.log); 
+}
+
 async function run() {
   const account = await getCurrentAccount();
+
   const contract = await deployContract(account);
   // TODO: Remove await from first interact when mempool nonce resolved
-  await interact(contract, account, true);
-  const blockNum = await interact(contract, account, false);
-  console.log("block number: " + blockNum);
-  // web3.eth.getBlock(parseInt(blockNum)).then(console.log);
+  
+  const blockNumT = await interact(contract, account, true);
+  console.log("block number: " + blockNumT, "\n");
+  
+  const blockNumF = await interact(contract, account, false);
+  console.log("block number: " + blockNumF, "\n");
+
+  
+  // Displays event1 
+  await getBlockByNumber(blockNumT); 
+  
+  // Displays event2
+  await getBlockByNumber(blockNumF); 
+
+  // web3.eth.getBlock(parseInt(blockNumT)).then(console.log);
+
 }
 
 run().then(() => console.log("done"));

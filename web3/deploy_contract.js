@@ -68,6 +68,10 @@ async function run() {
 
   const tx1_fut = interact(contract, account, true, nonce);
 
+  // Sleep is just to ensure transaction ordering, no way I could find to wait for send confirmation
+  // without waiting for tx finalization with web3js. (This is not determistic unfortunately)
+  await new Promise(r => setTimeout(r, 100));
+
   const blockNumF = await interact(contract, account, false, nonce + 1);
   await tx1_fut;
 

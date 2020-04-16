@@ -52,14 +52,30 @@ async function interact(newContractInstance, account, name, nonce) {
     });
 }
 
+// This will get the block by block number and display it.  
+async function getBlockByNumber(blockNum) {
+  console.log("\n", "block number: " + blockNum);
+  return web3.eth.getBlock(parseInt(blockNum))
+    .then(console.log);
+}
+
 async function run() {
   const account = await getCurrentAccount();
+
   const contract = await deployContract(account);
+
   let nonce = await web3.eth.getTransactionCount(account);
-  interact(contract, account, true, nonce);
-  const blockNum = await interact(contract, account, false, nonce + 1);
-  console.log("block number: " + blockNum);
-  // web3.eth.getBlock(parseInt(blockNum)).then(console.log);
+
+  const tx1_fut = interact(contract, account, true, nonce);
+
+  const blockNumF = await interact(contract, account, false, nonce + 1);
+  await tx1_fut;
+
+  // Displays event2
+  await getBlockByNumber(blockNumF);
+
+  // web3.eth.getBlock(parseInt(blockNumT)).then(console.log);
+
 }
 
 run().then(() => console.log("done"));
